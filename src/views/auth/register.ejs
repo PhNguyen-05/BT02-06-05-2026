@@ -231,6 +231,7 @@
   background: white;
   color: #718096;
   transition: all 0.3s ease;
+  cursor: pointer;
 }
 
 .input-group .btn:hover {
@@ -309,68 +310,80 @@
 // Kiểm tra mật khẩu mạnh
 function checkPasswordStrength(password) {
   const strengthEl = document.getElementById('passwordStrength');
+  if (!strengthEl) return false;
+
   if (password.length === 0) {
     strengthEl.textContent = '';
     return false;
   }
 
   const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-  
+
   if (regex.test(password)) {
     strengthEl.innerHTML = '<span class="text-success">✅ Mật khẩu mạnh</span>';
     return true;
-  } else {
-    strengthEl.innerHTML = '<span class="text-warning">⚠️ Mật khẩu phải có ít nhất 8 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt</span>';
-    return false;
   }
+
+  strengthEl.innerHTML = '<span class="text-warning">⚠️ Mật khẩu phải có ít nhất 8 ký tự, chữ hoa, chữ thường, số và ký tự đặc biệt</span>';
+  return false;
 }
 
-// Xử lý form
-document.getElementById('registerForm').addEventListener('submit', function(e) {
-  const password = document.getElementById('password').value;
-  const confirmPassword = document.getElementById('confirmPassword').value;
-  const errorEl = document.getElementById('passwordError');
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('registerForm');
+  const passwordInput = document.getElementById('password');
+  const confirmPasswordInput = document.getElementById('confirmPassword');
+  const passwordErrorEl = document.getElementById('passwordError');
 
-  const isStrong = checkPasswordStrength(password);
+  if (form) {
+    form.addEventListener('submit', function(e) {
+      const password = passwordInput ? passwordInput.value : '';
+      const confirmPassword = confirmPasswordInput ? confirmPasswordInput.value : '';
 
-  if (!isStrong) {
-    e.preventDefault();
-    return;
+      if (!checkPasswordStrength(password)) {
+        e.preventDefault();
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        e.preventDefault();
+        if (passwordErrorEl) {
+          passwordErrorEl.textContent = '❌ Mật khẩu xác nhận không khớp!';
+        }
+      } else if (passwordErrorEl) {
+        passwordErrorEl.textContent = '';
+      }
+    });
   }
 
-  if (password !== confirmPassword) {
-    e.preventDefault();
-    errorEl.textContent = '❌ Mật khẩu xác nhận không khớp!';
-  } else {
-    errorEl.textContent = '';
+  const toggles = document.querySelectorAll('.toggle-password');
+  if (toggles.length > 0) {
+    toggles.forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        const targetId = this.dataset.target;
+        const input = document.getElementById(targetId);
+        const icon = this.querySelector('i');
+
+        if (!input || !icon) return;
+
+        const isHidden = input.type === 'password';
+        input.type = isHidden ? 'text' : 'password';
+        icon.classList.toggle('bi-eye', !isHidden);
+        icon.classList.toggle('bi-eye-slash', isHidden);
+      });
+    });
+  }
+
+  if (passwordInput) {
+    passwordInput.addEventListener('input', function() {
+      checkPasswordStrength(this.value);
+    });
+  }
+
+  if (confirmPasswordInput && passwordErrorEl) {
+    confirmPasswordInput.addEventListener('input', function() {
+      passwordErrorEl.textContent = '';
+    });
   }
 });
-
-// Toggle mật khẩu
-document.querySelectorAll('.toggle-password').forEach(button => {
-  button.addEventListener('click', function(e) {
-    e.preventDefault();
-    const targetId = this.getAttribute('data-target');
-    const input = document.getElementById(targetId);
-    const icon = this.querySelector('i');
-    
-    if (input.type === 'password') {
-      input.type = 'text';
-      icon.classList.replace('bi-eye', 'bi-eye-slash');
-    } else {
-      input.type = 'password';
-      icon.classList.replace('bi-eye-slash', 'bi-eye');
-    }
-  });
-});
-
-// Real-time check
-document.getElementById('password').addEventListener('input', function() {
-  checkPasswordStrength(this.value);
-});
-
-document.getElementById('confirmPassword').addEventListener('input', function() {
-  document.getElementById('passwordError').textContent = '';
-});
-
 </script>
