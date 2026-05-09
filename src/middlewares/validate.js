@@ -60,8 +60,17 @@ const registerValidation = [
 
 const validate = (req, res, next) => {
   const errors = validationResult(req);
+  const isApiRequest = (req.headers.accept && req.headers.accept.includes('application/json')) ||
+    req.is('application/json');
   
   if (!errors.isEmpty()) {
+    if (isApiRequest) {
+      return res.status(400).json({
+        success: false,
+        errors: errors.array()
+      });
+    }
+
     return res.render('auth/register', { 
       errors: errors.array(), 
       oldData: req.body 

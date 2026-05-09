@@ -12,15 +12,16 @@ class AuthService {
     const otp = generateOTP();
     const otpExpires = new Date(Date.now() + 10 * 60 * 1000);
 
-    await User.create({
-      name, 
-      email, 
-      password: hashedPassword, 
-      otp, 
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      otp,
       otpExpires
     });
 
     await sendOTPEmail(email, otp);
+    return user;
   }
 
   async verifyOTP(email, otp) {
