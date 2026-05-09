@@ -1,0 +1,34 @@
+<div class="row justify-content-center">
+  <div class="col-md-6 col-lg-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-primary text-white text-center py-3">
+        <h4 class="mb-0">Đăng ký tài khoản TOEIC</h4>
+      </div>
+      <div class="card-body p-4">
+        
+        <% errors.forEach(error => { %>
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <%= error.msg %>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          </div>
+        <% }) %>
+
+        <form action="/register" method="POST">
+          <div class="mb-3">
+            <label class="form-label fw-bold">Họ và tên</label>
+            <input type="text" name="name" class="form-control" value="<%= oldData.name || '' %>" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label fw-bold">Email</label>
+            <input type="email" name="email" class="form-control" value="<%= oldData.email || '' %>" required>
+          </div>
+          <div class="mb-4">
+            <label class="form-label fw-bold">Mật khẩu</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+          <button type="submit" class="btn btn-primary w-100 py-2">Đăng ký</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
