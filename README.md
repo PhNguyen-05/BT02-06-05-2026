@@ -257,8 +257,4 @@ Project có collection Postman để test API:
 
 ---
 
-```bash
-npm run dev
-```
 
----
