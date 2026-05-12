@@ -86,8 +86,6 @@ BT02-06-05-2026
 # Cài đặt project
 
 ## 1. Clone project
-
-```bash
 git clone https://github.com/your-username/your-repository.git
 ```
 
@@ -258,16 +256,6 @@ Project có collection Postman để test API:
 - Verify OTP sai
 
 ---
-
-# Scripts
-
-## Start server
-
-```bash
-npm start
-```
-
-## Run development
 
 ```bash
 npm run dev
